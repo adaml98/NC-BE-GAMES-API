@@ -18,8 +18,8 @@ describe("getCategories()", () => {
       .get("/api/categories")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toHaveLength(4);
-        body.forEach((category) => {
+        expect(body.categories).toHaveLength(4);
+        body.categories.forEach((category) => {
           expect(category).toHaveProperty("slug", expect.any(String));
           expect(category).toHaveProperty("description", expect.any(String));
         });
