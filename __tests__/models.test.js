@@ -12,7 +12,7 @@ afterAll(() => {
   return db.end();
 });
 
-describe("getCategories()", () => {
+describe("/api/categories", () => {
   it("should get a reponse of 200: and return all categories", () => {
     return request(app)
       .get("/api/categories")
@@ -25,6 +25,9 @@ describe("getCategories()", () => {
         });
       });
   });
+});
+
+describe("Wrong path error handling", () => {
   it("should throw a 404 error when given a route that does not exist", () => {
     return request(app)
       .get("/api/cat")
