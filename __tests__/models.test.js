@@ -32,44 +32,38 @@ describe("/api/reviews/:review_id", () => {
       .get("/api/reviews/1")
       .expect(200)
       .then(({ body }) => {
-        expect(body.review).toHaveLength(1);
-        body.review.forEach((review) => {
-          expect(review).toHaveProperty("review_id", 1);
-          expect(review).toHaveProperty("title", "Agricola");
-          expect(review).toHaveProperty("category", "euro game");
-          expect(review).toHaveProperty("designer", "Uwe Rosenberg");
-          expect(review).toHaveProperty("owner", "mallionaire");
-          expect(review).toHaveProperty("review_body", "Farmyard fun!");
-          expect(review).toHaveProperty(
-            "review_img_url",
-            "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700"
-          );
-          expect(review).toHaveProperty(
-            "created_at",
-            "2021-01-18T10:00:20.514Z"
-          );
-          expect(review).toHaveProperty("votes", 1);
-        });
+        expect(body.review).toHaveProperty("review_id", 1);
+        expect(body.review).toHaveProperty("title", "Agricola");
+        expect(body.review).toHaveProperty("category", "euro game");
+        expect(body.review).toHaveProperty("designer", "Uwe Rosenberg");
+        expect(body.review).toHaveProperty("owner", "mallionaire");
+        expect(body.review).toHaveProperty("review_body", "Farmyard fun!");
+        expect(body.review).toHaveProperty(
+          "review_img_url",
+          "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700"
+        );
+        expect(body.review).toHaveProperty(
+          "created_at",
+          "2021-01-18T10:00:20.514Z"
+        );
+        expect(body.review).toHaveProperty("votes", 1);
       });
   });
 
-  /**
-   * review_id
-title
-review_body
-designer
-review_img_url
-votes
-category
-owner
-created_at
-   */
   it("should throw a 400 error when given a bad request", () => {
     return request(app)
       .get("/api/reviews/notAnId")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad Request");
+      });
+  });
+  it("should throw a 404 error when given an incorrect id", () => {
+    return request(app)
+      .get("/api/reviews/999999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid ID");
       });
   });
 });

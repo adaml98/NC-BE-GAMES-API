@@ -16,6 +16,12 @@ exports.fetchReview = (review_id) => {
   `
     )
     .then((review) => {
-      return review.rows;
+      if (review.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `Invalid ID`,
+        });
+      }
+      return review.rows[0];
     });
 };
