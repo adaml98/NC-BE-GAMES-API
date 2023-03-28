@@ -26,9 +26,11 @@ exports.getReviews = (req, res) => {
   });
 };
 
-exports.getReviewComments = (req, res) => {
+exports.getReviewComments = (req, res, next) => {
   const review_id = req.params.review_id;
-  fetchReviewComments(review_id).then((comments) => {
-    res.status(200).send({ comments });
-  });
+  fetchReviewComments(review_id)
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch(next);
 };

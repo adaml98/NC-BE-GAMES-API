@@ -91,7 +91,7 @@ describe("/api/reviews", () => {
   });
 });
 describe("/api/reviews/:review_id/comments", () => {
-  it("should recieve a response of 200 and return all comments for the given review id", () => {
+  it("should receive a response of 200 and return all comments for the given review id", () => {
     return request(app)
       .get("/api/reviews/2/comments")
       .expect(200)
@@ -106,6 +106,30 @@ describe("/api/reviews/:review_id/comments", () => {
           expect(comment).toHaveProperty("body");
           expect(comment).toHaveProperty("review_id");
         });
+      });
+  });
+  it("should throw a 400 error when given a bad request", () => {
+    return request(app)
+      .get("/api/reviews/notAnId/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  it("should throw a 404 error when given an incorrect id", () => {
+    return request(app)
+      .get("/api/reviews/999999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID can not be found");
+      });
+  });
+  it("should not throw a 404 error when given a correct id but returns an empty array", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
       });
   });
 });

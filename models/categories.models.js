@@ -54,6 +54,24 @@ exports.fetchReviewComments = (review_id) => {
       [review_id]
     )
     .then((comments) => {
+      if (comments.rows.length === 0) {
+        return checkReviewExists(review_id).then(() => {
+          return comments.rows;
+        });
+      }
       return comments.rows;
+    });
+};
+
+const checkReviewExists = (review_id) => {
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `ID can not be found`,
+        });
+      }
     });
 };
