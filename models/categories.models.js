@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { convertTimestampToDate } = require("../db/seeds/utils");
 
 exports.fetchCategories = () => {
   return db.query(`SELECT * FROM categories;`).then((categories) => {
@@ -61,6 +62,22 @@ exports.fetchReviewComments = (review_id) => {
       }
       return comments.rows;
     });
+};
+
+exports.submitReviewComment = (newComment, review_id) => {
+  const { username, body } = newComment;
+  return db
+    .query(
+      `
+    INSERT INTO comments 
+      (author, body, review_id)
+    VALUES
+      ($1, $2, $3)
+    RETURNING *;
+    `,
+      [username, body, review_id]
+    )
+    .then(({ rows }) => rows[0]);
 };
 
 const checkReviewExists = (review_id) => {
