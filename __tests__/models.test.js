@@ -68,6 +68,28 @@ describe("/api/reviews/:review_id", () => {
   });
 });
 
+describe("/api/reviews", () => {
+  it("should recieve a response of 200 and return all reviews ", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        body.reviews.rows.forEach((review) => {
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("review_body", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("comment_count", expect.any(String));
+        });
+      });
+  });
+});
+
 describe("Wrong path error handling", () => {
   it("should throw a 404 error when given a route that does not exist", () => {
     return request(app)
