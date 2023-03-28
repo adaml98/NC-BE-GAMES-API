@@ -12,8 +12,9 @@ exports.fetchReview = (review_id) => {
       `
   SELECT * 
   FROM reviews
-  WHERE review_id = ${review_id};
-  `
+  WHERE review_id = $1;
+  `,
+      [review_id]
     )
     .then((review) => {
       if (review.rows.length === 0) {
