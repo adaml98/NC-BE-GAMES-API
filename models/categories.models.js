@@ -12,8 +12,9 @@ exports.fetchReview = (review_id) => {
       `
   SELECT * 
   FROM reviews
-  WHERE review_id = ${review_id};
-  `
+  WHERE review_id = $1;
+  `,
+      [review_id]
     )
     .then((review) => {
       if (review.rows.length === 0) {
@@ -24,4 +25,16 @@ exports.fetchReview = (review_id) => {
       }
       return review.rows[0];
     });
+};
+
+exports.fetchReviews = () => {
+  return db.query(
+    `
+    Select reviews.*, COUNT(comment_id) AS comment_count
+    FROM reviews
+    LEFT JOIN comments ON reviews.review_id = comments.review_id
+    GROUP BY reviews.review_id
+    ORDER BY reviews.created_at DESC;
+  `
+  );
 };
