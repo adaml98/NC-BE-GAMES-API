@@ -97,6 +97,7 @@ describe("/api/reviews/:review_id/comments", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.comments).toHaveLength(3);
+        expect(body.comments).toBeSorted();
         body.comments.forEach((comment) => {
           expect(comment).toHaveProperty("comment_id");
           expect(comment).toHaveProperty("votes");
