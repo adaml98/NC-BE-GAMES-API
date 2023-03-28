@@ -74,8 +74,8 @@ describe("/api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        expect(body.reviews.rows).toHaveLength(13);
-        body.reviews.rows.forEach((review) => {
+        expect(body.reviews).toHaveLength(13);
+        body.reviews.forEach((review) => {
           expect(review).toHaveProperty("review_id", expect.any(Number));
           expect(review).toHaveProperty("title", expect.any(String));
           expect(review).toHaveProperty("category", expect.any(String));
@@ -86,6 +86,24 @@ describe("/api/reviews", () => {
           expect(review).toHaveProperty("created_at", expect.any(String));
           expect(review).toHaveProperty("votes", expect.any(Number));
           expect(review).toHaveProperty("comment_count", expect.any(String));
+        });
+      });
+  });
+});
+describe("/api/reviews/:review_id/comments", () => {
+  it("should recieve a response of 200 and return all comments for the given review id", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(3);
+        body.comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id");
+          expect(comment).toHaveProperty("votes");
+          expect(comment).toHaveProperty("created_at");
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("body");
+          expect(comment).toHaveProperty("review_id");
         });
       });
   });
