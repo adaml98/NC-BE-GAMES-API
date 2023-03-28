@@ -43,7 +43,7 @@ exports.fetchReviews = () => {
     });
 };
 
-exports.fetchReviewComments = (review_id) => {
+exports.fetchReviewComments = (votes, review_id) => {
   return db
     .query(
       `
@@ -51,7 +51,7 @@ exports.fetchReviewComments = (review_id) => {
     WHERE review_id = $1
     ORDER BY created_at ASC;
     `,
-      [review_id]
+      [votes, review_id]
     )
     .then((comments) => {
       if (comments.rows.length === 0) {
@@ -74,4 +74,14 @@ const checkReviewExists = (review_id) => {
         });
       }
     });
+};
+
+exports.editReview = (review_id) => {
+  return db.query(
+    `UPDATE reviews
+  SET votes = votes + $1
+  WHERE review_id = $2;
+  `,
+    []
+  );
 };

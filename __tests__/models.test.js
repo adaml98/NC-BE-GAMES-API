@@ -145,3 +145,9 @@ describe("Wrong path error handling", () => {
       });
   });
 });
+
+describe("PATCH: /api/reviews/:review_id", () => {
+  it.only("should modify the votes on a review and return the updated review", () => {
+    return request(app).patch("/api/reviews/1").expect(200);
+  });
+});

@@ -3,6 +3,7 @@ const {
   fetchReview,
   fetchReviews,
   fetchReviewComments,
+  editReview,
 } = require("../models/categories.models");
 
 exports.getCategories = (req, res) => {
@@ -33,4 +34,11 @@ exports.getReviewComments = (req, res, next) => {
       res.status(200).send({ comments });
     })
     .catch(next);
+};
+
+exports.patchReview = (req, res, next) => {
+  console.log(req.params);
+  editReview().then((editedReview) => {
+    response.status(200).send({ editedReview });
+  });
 };
