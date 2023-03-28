@@ -69,13 +69,14 @@ describe("/api/reviews/:review_id", () => {
 });
 
 describe("/api/reviews", () => {
-  it("should recieve a response of 200 and return all reviews ", () => {
+  it("should recieve a response of 200 and return all reviews ordered by date desc", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        expect(body.reviews.rows).toHaveLength(13);
-        body.reviews.rows.forEach((review) => {
+        expect(body.reviews).toBeSortedBy("created_at", { descending: true });
+        expect(body.reviews).toHaveLength(13);
+        body.reviews.forEach((review) => {
           expect(review).toHaveProperty("review_id", expect.any(Number));
           expect(review).toHaveProperty("title", expect.any(String));
           expect(review).toHaveProperty("category", expect.any(String));
@@ -87,6 +88,49 @@ describe("/api/reviews", () => {
           expect(review).toHaveProperty("votes", expect.any(Number));
           expect(review).toHaveProperty("comment_count", expect.any(String));
         });
+      });
+  });
+});
+describe("/api/reviews/:review_id/comments", () => {
+  it("should receive a response of 200 and return all comments for the given review id, ordered by date asc", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(3);
+        expect(body.comments).toBeSortedBy("created_at");
+        body.comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("review_id", expect.any(Number));
+        });
+      });
+  });
+  it("should throw a 400 error when given a bad request", () => {
+    return request(app)
+      .get("/api/reviews/notAnId/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  it("should throw a 404 error when given an incorrect id", () => {
+    return request(app)
+      .get("/api/reviews/999999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID can not be found");
+      });
+  });
+  it("should not throw a 404 error when given a correct id but returns an empty array", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
       });
   });
 });
