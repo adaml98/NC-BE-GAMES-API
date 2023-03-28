@@ -5,3 +5,23 @@ exports.fetchCategories = () => {
     return categories.rows;
   });
 };
+
+exports.fetchReview = (review_id) => {
+  return db
+    .query(
+      `
+  SELECT * 
+  FROM reviews
+  WHERE review_id = ${review_id};
+  `
+    )
+    .then((review) => {
+      if (review.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `ID can not be found`,
+        });
+      }
+      return review.rows[0];
+    });
+};
