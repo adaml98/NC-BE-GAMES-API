@@ -63,7 +63,7 @@ describe("/api/reviews/:review_id", () => {
       .get("/api/reviews/999999")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Invalid ID");
+        expect(body.msg).toBe("ID can not be found");
       });
   });
 });

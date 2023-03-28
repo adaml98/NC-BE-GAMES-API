@@ -19,7 +19,7 @@ exports.fetchReview = (review_id) => {
       if (review.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `Invalid ID`,
+          msg: `ID can not be found`,
         });
       }
       return review.rows[0];
