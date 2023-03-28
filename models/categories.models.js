@@ -76,12 +76,17 @@ const checkReviewExists = (review_id) => {
     });
 };
 
-exports.editReview = (review_id) => {
-  return db.query(
-    `UPDATE reviews
+exports.editReview = (inc_votes, review_id) => {
+  return db
+    .query(
+      `UPDATE reviews
   SET votes = votes + $1
-  WHERE review_id = $2;
+  WHERE review_id = $2
+  RETURNING *;
   `,
-    []
-  );
+      [inc_votes, review_id]
+    )
+    .then((updatedReview) => {
+      return updatedReview.rows[0];
+    });
 };

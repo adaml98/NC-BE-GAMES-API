@@ -148,6 +148,30 @@ describe("Wrong path error handling", () => {
 
 describe("PATCH: /api/reviews/:review_id", () => {
   it.only("should modify the votes on a review and return the updated review", () => {
-    return request(app).patch("/api/reviews/1").expect(200);
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: 10 })
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.editedReview).toHaveProperty("review_id", 1);
+        expect(body.editedReview).toHaveProperty("title", "Agricola");
+        expect(body.editedReview).toHaveProperty("category", "euro game");
+        expect(body.editedReview).toHaveProperty("designer", "Uwe Rosenberg");
+        expect(body.editedReview).toHaveProperty("owner", "mallionaire");
+        expect(body.editedReview).toHaveProperty(
+          "review_body",
+          "Farmyard fun!"
+        );
+        expect(body.editedReview).toHaveProperty(
+          "review_img_url",
+          "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700"
+        );
+        expect(body.editedReview).toHaveProperty(
+          "created_at",
+          "2021-01-18T10:00:20.514Z"
+        );
+        expect(body.editedReview).toHaveProperty("votes", 11);
+      });
   });
 });
