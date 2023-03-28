@@ -69,11 +69,12 @@ describe("/api/reviews/:review_id", () => {
 });
 
 describe("/api/reviews", () => {
-  it("should recieve a response of 200 and return all reviews ", () => {
+  it("should recieve a response of 200 and return all reviews ordered by date desc", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
+        expect(body.reviews).toBeSortedBy("created_at", { descending: true });
         expect(body.reviews).toHaveLength(13);
         body.reviews.forEach((review) => {
           expect(review).toHaveProperty("review_id", expect.any(Number));
@@ -91,13 +92,13 @@ describe("/api/reviews", () => {
   });
 });
 describe("/api/reviews/:review_id/comments", () => {
-  it("should receive a response of 200 and return all comments for the given review id", () => {
+  it("should receive a response of 200 and return all comments for the given review id, ordered by date asc", () => {
     return request(app)
       .get("/api/reviews/2/comments")
       .expect(200)
       .then(({ body }) => {
         expect(body.comments).toHaveLength(3);
-        expect(body.comments).toBeSorted();
+        expect(body.comments).toBeSortedBy("created_at");
         body.comments.forEach((comment) => {
           expect(comment).toHaveProperty("comment_id");
           expect(comment).toHaveProperty("votes");
