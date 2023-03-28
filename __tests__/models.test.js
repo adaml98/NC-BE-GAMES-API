@@ -74,6 +74,7 @@ describe("/api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
+        expect(body.reviews.rows).toHaveLength(13);
         body.reviews.rows.forEach((review) => {
           expect(review).toHaveProperty("review_id", expect.any(Number));
           expect(review).toHaveProperty("title", expect.any(String));
