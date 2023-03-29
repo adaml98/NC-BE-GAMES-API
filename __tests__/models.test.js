@@ -207,17 +207,6 @@ describe("POST: /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe("Wrong path error handling", () => {
-  it("should throw a 404 error when given a route that does not exist", () => {
-    return request(app)
-      .get("/api/cat")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Path not found");
-      });
-  });
-});
-
 describe("PATCH: /api/reviews/:review_id", () => {
   it("should modify the votes on a review and return the updated review", () => {
     return request(app)
@@ -269,7 +258,18 @@ describe("PATCH: /api/reviews/:review_id", () => {
       .send({ inc_votes: 10 })
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID can not be found");
+        expect(body.msg).toBe("404 Not Found");
+      });
+  });
+});
+
+describe("Wrong path error handling", () => {
+  it("should throw a 404 error when given a route that does not exist", () => {
+    return request(app)
+      .get("/api/cat")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Path not found");
       });
   });
 });

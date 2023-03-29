@@ -5,6 +5,7 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
 
 exports.handlePsqlErrors = (err, req, res, next) => {
+  console.log(err);
   if (err.code === "23503") {
     res.status(404).send({ msg: "404 Not Found" });
   } else if (

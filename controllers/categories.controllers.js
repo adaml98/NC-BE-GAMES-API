@@ -37,13 +37,15 @@ exports.getReviewComments = (req, res, next) => {
     .catch(next);
 };
 
-
 exports.patchReview = (req, res, next) => {
   const review_id = req.params.review_id;
   const inc_votes = req.body.inc_votes;
   editReview(inc_votes, review_id)
     .then((editedReview) => {
       res.status(200).send({ editedReview });
+    })
+    .catch(next);
+};
 
 exports.postReviewComment = (req, res, next) => {
   const newComment = req.body;
@@ -51,7 +53,6 @@ exports.postReviewComment = (req, res, next) => {
   submitReviewComment(newComment, review_id)
     .then((comment) => {
       res.status(201).send({ comment });
-
     })
     .catch(next);
 };
