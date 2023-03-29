@@ -4,6 +4,7 @@ const {
   fetchReviews,
   fetchReviewComments,
   editReview,
+  submitReviewComment,
 } = require("../models/categories.models");
 
 exports.getCategories = (req, res) => {
@@ -36,12 +37,21 @@ exports.getReviewComments = (req, res, next) => {
     .catch(next);
 };
 
+
 exports.patchReview = (req, res, next) => {
   const review_id = req.params.review_id;
   const inc_votes = req.body.inc_votes;
   editReview(inc_votes, review_id)
     .then((editedReview) => {
       res.status(200).send({ editedReview });
+
+exports.postReviewComment = (req, res, next) => {
+  const newComment = req.body;
+  const review_id = req.params.review_id;
+  submitReviewComment(newComment, review_id)
+    .then((comment) => {
+      res.status(201).send({ comment });
+
     })
     .catch(next);
 };

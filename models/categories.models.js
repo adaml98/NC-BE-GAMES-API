@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { convertTimestampToDate } = require("../db/seeds/utils");
 
 exports.fetchCategories = () => {
   return db.query(`SELECT * FROM categories;`).then((categories) => {
@@ -20,7 +21,7 @@ exports.fetchReview = (review_id) => {
       if (review.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `ID can not be found`,
+          msg: `404 Not Found`,
         });
       }
       return review.rows[0];
@@ -63,6 +64,22 @@ exports.fetchReviewComments = (review_id) => {
     });
 };
 
+exports.submitReviewComment = (newComment, review_id) => {
+  const { username, body } = newComment;
+  return db
+    .query(
+      `
+    INSERT INTO comments 
+      (author, body, review_id)
+    VALUES
+      ($1, $2, $3)
+    RETURNING *;
+    `,
+      [username, body, review_id]
+    )
+    .then(({ rows }) => rows[0]);
+};
+
 const checkReviewExists = (review_id) => {
   return db
     .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
@@ -70,7 +87,7 @@ const checkReviewExists = (review_id) => {
       if (result.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `ID can not be found`,
+          msg: `404 Not Found`,
         });
       }
     });
