@@ -12,7 +12,7 @@ afterAll(() => {
   return db.end();
 });
 
-describe("/api/categories", () => {
+describe("GET: /api/categories", () => {
   it("should get a reponse of 200 and return all categories", () => {
     return request(app)
       .get("/api/categories")
@@ -26,7 +26,7 @@ describe("/api/categories", () => {
       });
   });
 });
-describe("/api/reviews/:review_id", () => {
+describe("GET: /api/reviews/:review_id", () => {
   it("should get a response of 200 and return a specific review depending on the parametric endpoint", () => {
     return request(app)
       .get("/api/reviews/1")
@@ -63,12 +63,12 @@ describe("/api/reviews/:review_id", () => {
       .get("/api/reviews/999999")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID can not be found");
+        expect(body.msg).toBe("404 Not Found");
       });
   });
 });
 
-describe("/api/reviews", () => {
+describe("GET: /api/reviews", () => {
   it("should recieve a response of 200 and return all reviews ordered by date desc", () => {
     return request(app)
       .get("/api/reviews")
@@ -91,7 +91,7 @@ describe("/api/reviews", () => {
       });
   });
 });
-describe("/api/reviews/:review_id/comments", () => {
+describe("GET: /api/reviews/:review_id/comments", () => {
   it("should receive a response of 200 and return all comments for the given review id, ordered by date asc", () => {
     return request(app)
       .get("/api/reviews/2/comments")
@@ -122,7 +122,7 @@ describe("/api/reviews/:review_id/comments", () => {
       .get("/api/reviews/999999/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID can not be found");
+        expect(body.msg).toBe("404 Not Found");
       });
   });
   it("should not throw a 404 error when given a correct id but returns an empty array", () => {
@@ -131,6 +131,78 @@ describe("/api/reviews/:review_id/comments", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.comments).toEqual([]);
+      });
+  });
+});
+
+describe("POST: /api/reviews/:review_id/comments", () => {
+  it("should receive a response of 201 and return the posted comment ", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "mallionaire", body: "hello world" })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toHaveProperty("comment_id", 7);
+        expect(body.comment).toHaveProperty("body", "hello world");
+        expect(body.comment).toHaveProperty("review_id", 1);
+        expect(body.comment).toHaveProperty("author", "mallionaire");
+        expect(body.comment).toHaveProperty("votes", 0);
+        expect(body.comment).toHaveProperty("created_at", expect.any(String));
+      });
+  });
+  it("should recieve a response of 201 and ignore any unnecessary properties in the input body", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({
+        username: "mallionaire",
+        body: "hello world",
+        comment_id: "99",
+        hello: "hello",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toHaveProperty("comment_id", 7);
+        expect(body.comment).toHaveProperty("body", "hello world");
+        expect(body.comment).toHaveProperty("review_id", 1);
+        expect(body.comment).toHaveProperty("author", "mallionaire");
+        expect(body.comment).toHaveProperty("votes", 0);
+        expect(body.comment).toHaveProperty("created_at", expect.any(String));
+      });
+  });
+  it("should throw a 400 error when missing fields", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "mallionaire" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  it("should throw a 400 error when given an invalid ID", () => {
+    return request(app)
+      .post("/api/reviews/notAnId/comments")
+      .send({ username: "mallionaire", body: "hello world" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  it("should throw a 404 error when given an incorrect id", () => {
+    return request(app)
+      .post("/api/reviews/999999/comments")
+      .send({ username: "mallionaire", body: "hello world" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404 Not Found");
+      });
+  });
+  it("should throw a 404 error when given an incorrect username", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "adam", body: "hello world" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404 Not Found");
       });
   });
 });
