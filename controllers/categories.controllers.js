@@ -37,10 +37,11 @@ exports.getReviewComments = (req, res, next) => {
 };
 
 exports.patchReview = (req, res, next) => {
-  console.log(req.params);
   const review_id = req.params.review_id;
   const inc_votes = req.body.inc_votes;
-  editReview(inc_votes, review_id).then((editedReview) => {
-    res.status(200).send({ editedReview });
-  });
+  editReview(inc_votes, review_id)
+    .then((editedReview) => {
+      res.status(200).send({ editedReview });
+    })
+    .catch(next);
 };
