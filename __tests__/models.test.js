@@ -272,6 +272,7 @@ describe("DELETE: /api/comments/:comment_idgroup", () => {
         expect(body).toEqual({});
       });
   });
+
   it("should throw a 404 error when given an incorrect id", () => {
     return request(app)
       .delete("/api/comments/999999")

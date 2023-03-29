@@ -136,6 +136,7 @@ exports.removeComment = (comment_id) => {
         [comment_id]
       )
       .then((result) => {
+        console.log(result.rows);
         return result.rows;
       });
   });
