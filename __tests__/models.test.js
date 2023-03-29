@@ -263,6 +263,33 @@ describe("PATCH: /api/reviews/:review_id", () => {
   });
 });
 
+describe("DELETE: /api/comments/:comment_idgroup", () => {
+  it("should delete the given comment and return no content", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  it("should throw a 404 error when given an incorrect id", () => {
+    return request(app)
+      .delete("/api/comments/999999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404 Not Found");
+      });
+  });
+  it("should throw a 400: bad request error when given an invalid id", () => {
+    return request(app)
+      .delete("/api/comments/notAnId")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+});
+
 describe("Wrong path error handling", () => {
   it("should throw a 404 error when given a route that does not exist", () => {
     return request(app)
