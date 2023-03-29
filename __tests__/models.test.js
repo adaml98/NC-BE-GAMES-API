@@ -291,6 +291,22 @@ describe("DELETE: /api/comments/:comment_idgroup", () => {
   });
 });
 
+describe.only("GET: /api/users", () => {
+  it("should recieve a 200 and return an array of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users).toHaveLength(4);
+        body.users.forEach((user) => {
+          expect(user).toHaveProperty("username", expect.any(String));
+          expect(user).toHaveProperty("name", expect.any(String));
+          expect(user).toHaveProperty("avatar_url", expect.any(String));
+        });
+      });
+  });
+});
+
 describe("Wrong path error handling", () => {
   it("should throw a 404 error when given a route that does not exist", () => {
     return request(app)

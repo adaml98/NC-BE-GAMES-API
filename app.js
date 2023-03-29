@@ -7,6 +7,7 @@ const {
   patchReview,
   postReviewComment,
   deleteComment,
+  getUsers,
 } = require("./controllers/categories.controllers");
 
 const {
@@ -29,6 +30,8 @@ app.patch("/api/reviews/:review_id", patchReview);
 app.post("/api/reviews/:review_id/comments", postReviewComment);
 
 app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get("/api/users", getUsers);
 
 app.use("/*", (req, res) => {
   res.status(404).send({ msg: "Path not found" });
