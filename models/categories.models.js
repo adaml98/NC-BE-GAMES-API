@@ -1,5 +1,4 @@
 const db = require("../db/connection");
-const { convertTimestampToDate } = require("../db/seeds/utils");
 
 exports.fetchCategories = () => {
   return db.query(`SELECT * FROM categories;`).then((categories) => {
@@ -111,4 +110,34 @@ exports.editReview = (inc_votes, review_id) => {
       }
       return updatedReview.rows[0];
     });
+};
+const checkCommentExists = (comment_id) => {
+  return db
+    .query(`SELECT * FROM comments WHERE comment_id = $1`, [comment_id])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `404 Not Found`,
+        });
+      }
+    });
+};
+
+exports.removeComment = (comment_id) => {
+  return checkCommentExists(comment_id).then(() => {
+    return db
+      .query(
+        `
+    DELETE FROM comments
+    WHERE comment_id = $1
+    RETURNING *;
+  `,
+        [comment_id]
+      )
+      .then((result) => {
+        console.log(result.rows);
+        return result.rows;
+      });
+  });
 };

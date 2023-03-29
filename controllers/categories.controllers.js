@@ -5,6 +5,7 @@ const {
   fetchReviewComments,
   editReview,
   submitReviewComment,
+  removeComment,
 } = require("../models/categories.models");
 
 exports.getCategories = (req, res) => {
@@ -53,6 +54,15 @@ exports.postReviewComment = (req, res, next) => {
   submitReviewComment(newComment, review_id)
     .then((comment) => {
       res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.deleteComment = (req, res, next) => {
+  const comment_id = req.params.comment_id;
+  removeComment(comment_id)
+    .then((result) => {
+      res.status(204).send();
     })
     .catch(next);
 };

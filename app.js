@@ -6,6 +6,7 @@ const {
   getReviewComments,
   patchReview,
   postReviewComment,
+  deleteComment,
 } = require("./controllers/categories.controllers");
 
 const {
@@ -19,18 +20,15 @@ const app = express();
 app.use(express.json());
 
 app.get("/api/categories", getCategories);
-
 app.get("/api/reviews/:review_id", getReview);
-
 app.get("/api/reviews", getReviews);
-
 app.get("/api/reviews/:review_id/comments", getReviewComments);
-
 
 app.patch("/api/reviews/:review_id", patchReview);
 
 app.post("/api/reviews/:review_id/comments", postReviewComment);
 
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.use("/*", (req, res) => {
   res.status(404).send({ msg: "Path not found" });
@@ -39,6 +37,5 @@ app.use("/*", (req, res) => {
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
 app.use(handleServerErrors);
-
 
 module.exports = app;
