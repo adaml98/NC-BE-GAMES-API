@@ -21,7 +21,7 @@ exports.fetchReview = (review_id) => {
       if (review.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `ID can not be found`,
+          msg: `404 Not Found`,
         });
       }
       return review.rows[0];
@@ -87,7 +87,7 @@ const checkReviewExists = (review_id) => {
       if (result.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `ID can not be found`,
+          msg: `404 Not Found`,
         });
       }
     });

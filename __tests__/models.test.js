@@ -63,7 +63,7 @@ describe("GET: /api/reviews/:review_id", () => {
       .get("/api/reviews/999999")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID can not be found");
+        expect(body.msg).toBe("404 Not Found");
       });
   });
 });
@@ -122,7 +122,7 @@ describe("GET: /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/999999/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID can not be found");
+        expect(body.msg).toBe("404 Not Found");
       });
   });
   it("should not throw a 404 error when given a correct id but returns an empty array", () => {
@@ -150,6 +150,25 @@ describe("POST: /api/reviews/:review_id/comments", () => {
         expect(body.comment).toHaveProperty("created_at", expect.any(String));
       });
   });
+  it("should recieve a response of 201 and ignore any unnecessary properties in the input body", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({
+        username: "mallionaire",
+        body: "hello world",
+        comment_id: "99",
+        hello: "hello",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toHaveProperty("comment_id", 7);
+        expect(body.comment).toHaveProperty("body", "hello world");
+        expect(body.comment).toHaveProperty("review_id", 1);
+        expect(body.comment).toHaveProperty("author", "mallionaire");
+        expect(body.comment).toHaveProperty("votes", 0);
+        expect(body.comment).toHaveProperty("created_at", expect.any(String));
+      });
+  });
   it("should throw a 400 error when missing fields", () => {
     return request(app)
       .post("/api/reviews/1/comments")
@@ -159,7 +178,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
         expect(body.msg).toBe("Bad Request");
       });
   });
-  it("should throw a 400 error when given a bad request", () => {
+  it("should throw a 400 error when given an invalid ID", () => {
     return request(app)
       .post("/api/reviews/notAnId/comments")
       .send({ username: "mallionaire", body: "hello world" })
@@ -174,7 +193,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
       .send({ username: "mallionaire", body: "hello world" })
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID can not be found");
+        expect(body.msg).toBe("404 Not Found");
       });
   });
   it("should throw a 404 error when given an incorrect username", () => {
@@ -183,7 +202,7 @@ describe("POST: /api/reviews/:review_id/comments", () => {
       .send({ username: "adam", body: "hello world" })
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID can not be found");
+        expect(body.msg).toBe("404 Not Found");
       });
   });
 });
