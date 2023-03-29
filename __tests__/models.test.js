@@ -217,3 +217,59 @@ describe("Wrong path error handling", () => {
       });
   });
 });
+
+describe("PATCH: /api/reviews/:review_id", () => {
+  it("should modify the votes on a review and return the updated review", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: 10 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.editedReview).toHaveProperty("review_id", 1);
+        expect(body.editedReview).toHaveProperty("title", "Agricola");
+        expect(body.editedReview).toHaveProperty("category", "euro game");
+        expect(body.editedReview).toHaveProperty("designer", "Uwe Rosenberg");
+        expect(body.editedReview).toHaveProperty("owner", "mallionaire");
+        expect(body.editedReview).toHaveProperty(
+          "review_body",
+          "Farmyard fun!"
+        );
+        expect(body.editedReview).toHaveProperty(
+          "review_img_url",
+          "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700"
+        );
+        expect(body.editedReview).toHaveProperty(
+          "created_at",
+          "2021-01-18T10:00:20.514Z"
+        );
+        expect(body.editedReview).toHaveProperty("votes", 11);
+      });
+  });
+  it("should throw a 400 error when given incorrect data in the inc_votes key", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: "hello" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  it("should throw a 400 error when given a bad request", () => {
+    return request(app)
+      .patch("/api/reviews/notAnId")
+      .send({ inc_votes: 10 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  it("should throw a 404 error when given an incorrect id", () => {
+    return request(app)
+      .patch("/api/reviews/999999")
+      .send({ inc_votes: 10 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID can not be found");
+      });
+  });
+});
