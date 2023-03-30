@@ -291,7 +291,7 @@ describe("DELETE: /api/comments/:comment_idgroup", () => {
   });
 });
 
-describe.only("GET: /api/users", () => {
+describe("GET: /api/users", () => {
   it("should recieve a 200 and return an array of users", () => {
     return request(app)
       .get("/api/users")
