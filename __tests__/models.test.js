@@ -69,7 +69,7 @@ describe("GET: /api/reviews/:review_id", () => {
 });
 
 describe("GET: /api/reviews", () => {
-  it("should recieve a response of 200 and return all reviews ordered by date desc", () => {
+  it("should recieve a response of 200 and return all reviews ordered by date desc when given no extra parameters", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -88,6 +88,122 @@ describe("GET: /api/reviews", () => {
           expect(review).toHaveProperty("votes", expect.any(Number));
           expect(review).toHaveProperty("comment_count", expect.any(String));
         });
+      });
+  });
+  it("should work with just the category query", () => {
+    return request(app)
+      .get("/api/reviews?category=social%20deduction")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.reviews).toBeSorted({ descending: true });
+        expect(body.reviews).toHaveLength(11);
+        body.reviews.forEach((review) => {
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("category", "social deduction");
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("review_body", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("comment_count", expect.any(String));
+        });
+      });
+  });
+  it("should work with just the sort_by query", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=title")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.reviews).toBeSortedBy("title", { descending: true });
+        expect(body.reviews).toHaveLength(13);
+        body.reviews.forEach((review) => {
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("review_body", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("comment_count", expect.any(String));
+        });
+      });
+  });
+  it("should work with just the order query", () => {
+    return request(app)
+      .get("/api/reviews?&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.reviews).toBeSorted({ descending: true });
+        expect(body.reviews).toHaveLength(13);
+        body.reviews.forEach((review) => {
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("review_body", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("comment_count", expect.any(String));
+        });
+      });
+  });
+  it("should work with the category, sort_by and order queries at the same time", () => {
+    return request(app)
+      .get("/api/reviews?category=social%20deduction&sort_by=title&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.reviews).toBeSortedBy("title");
+        expect(body.reviews).toHaveLength(11);
+        body.reviews.forEach((review) => {
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("category", "social deduction");
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("review_body", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("comment_count", expect.any(String));
+        });
+      });
+  });
+  it("should respond with empty body when given a category with no reviews associated with it", () => {
+    return request(app)
+      .get("/api/reviews?category=children's%20games")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.reviews).toEqual([]);
+      });
+  });
+  it("should throw a 404 error when given an invalid category query", () => {
+    return request(app)
+      .get("/api/reviews?category=notACategory")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404 Not Found");
+      });
+  });
+  it("should throw a 400 error when given an invalid sort query", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=notASort")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid sort query");
+      });
+  });
+  it("should throw a 400 error when given an invalid order query", () => {
+    return request(app)
+      .get("/api/reviews?order=notAOrder")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid order query");
       });
   });
 });
