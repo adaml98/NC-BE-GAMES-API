@@ -47,7 +47,14 @@ describe("GET: /api/reviews/:review_id", () => {
           "2021-01-18T10:00:20.514Z"
         );
         expect(body.review).toHaveProperty("votes", 1);
-        expect(body.review).toHaveProperty("comment_count", "0");
+      });
+  });
+  it("should get a response of 200 and return the new column 'comment count'", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review).toHaveProperty("comment_count", "3");
       });
   });
 
