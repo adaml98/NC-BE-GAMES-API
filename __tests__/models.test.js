@@ -49,6 +49,14 @@ describe("GET: /api/reviews/:review_id", () => {
         expect(body.review).toHaveProperty("votes", 1);
       });
   });
+  it("should get a response of 200 and return the new column 'comment count'", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review).toHaveProperty("comment_count", "3");
+      });
+  });
 
   it("should throw a 400 error when given a bad request", () => {
     return request(app)
