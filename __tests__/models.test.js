@@ -68,10 +68,10 @@ describe("GET: /api/reviews/:review_id", () => {
   });
 });
 
-describe("GET: /api/reviews", () => {
-  it("should recieve a response of 200 and return all reviews ordered by date desc", () => {
+describe.only("GET: /api/reviews", () => {
+  it("should recieve a response of 200 and return all reviews ordered by date desc when given no extra parameters", () => {
     return request(app)
-      .get("/api/reviews")
+      .get("/api/reviews/")
       .expect(200)
       .then(({ body }) => {
         expect(body.reviews).toBeSortedBy("created_at", { descending: true });
@@ -88,6 +88,35 @@ describe("GET: /api/reviews", () => {
           expect(review).toHaveProperty("votes", expect.any(Number));
           expect(review).toHaveProperty("comment_count", expect.any(String));
         });
+      });
+  });
+  it("should work with the following optional queries: category, sort_by, order", () => {
+    return request(app)
+      .get("/api/reviews/social%20deduction/title/asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.reviews).toBeSortedBy("title");
+        expect(body.reviews).toHaveLength(11);
+        body.reviews.forEach((review) => {
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review).toHaveProperty("designer", expect.any(String));
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("review_body", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("comment_count", expect.any(String));
+        });
+      });
+  });
+  it("should throw a 400 error when given a bad request", () => {
+    return request(app)
+      .get("/api/reviews/notACategory")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
       });
   });
 });

@@ -27,20 +27,38 @@ exports.fetchReview = (review_id) => {
     });
 };
 
-exports.fetchReviews = () => {
-  return db
-    .query(
-      `
+exports.fetchReviews = (category, sort_by = "created_at", order = "DESC") => {
+  console.log(category, sort_by, order);
+  if (!category) {
+    return db
+      .query(
+        `
     Select reviews.*, COUNT(comment_id) AS comment_count
     FROM reviews
     LEFT JOIN comments ON reviews.review_id = comments.review_id
     GROUP BY reviews.review_id
-    ORDER BY reviews.created_at DESC;
+    ORDER BY ${sort_by} ${order};
   `
-    )
-    .then((reviews) => {
-      return reviews.rows;
-    });
+      )
+      .then((reviews) => {
+        return reviews.rows;
+      });
+  } else {
+    return db
+      .query(
+        `
+    Select reviews.*, COUNT(comment_id) AS comment_count 
+    FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id 
+    WHERE category = $1 
+    GROUP BY reviews.review_id 
+    ORDER BY ${sort_by} ${order};
+  `,
+        [category]
+      )
+      .then((reviews) => {
+        return reviews.rows;
+      });
+  }
 };
 
 exports.fetchReviewComments = (review_id) => {
@@ -136,7 +154,6 @@ exports.removeComment = (comment_id) => {
         [comment_id]
       )
       .then((result) => {
-        console.log(result.rows);
         return result.rows;
       });
   });

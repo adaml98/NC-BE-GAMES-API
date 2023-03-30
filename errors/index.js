@@ -5,7 +5,7 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
 
 exports.handlePsqlErrors = (err, req, res, next) => {
-  if (err.code === "23503") {
+  if (err.code === "23503" || err.code === "42601") {
     res.status(404).send({ msg: "404 Not Found" });
   } else if (
     err.code === "42703" ||
@@ -17,5 +17,6 @@ exports.handlePsqlErrors = (err, req, res, next) => {
 };
 
 exports.handleServerErrors = (err, req, res, next) => {
+  console.log(err);
   res.status(500).send({ msg: "Internal Server Error" });
 };

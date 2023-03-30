@@ -22,16 +22,17 @@ app.use(express.json());
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReview);
-app.get("/api/reviews", getReviews);
+
+app.get("/api/reviews/:category?/:sort_by?/:order?", getReviews);
+
 app.get("/api/reviews/:review_id/comments", getReviewComments);
+app.get("/api/users", getUsers);
 
 app.patch("/api/reviews/:review_id", patchReview);
 
 app.post("/api/reviews/:review_id/comments", postReviewComment);
 
 app.delete("/api/comments/:comment_id", deleteComment);
-
-app.get("/api/users", getUsers);
 
 app.use("/*", (req, res) => {
   res.status(404).send({ msg: "Path not found" });

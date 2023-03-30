@@ -24,10 +24,13 @@ exports.getReview = (req, res, next) => {
     .catch(next);
 };
 
-exports.getReviews = (req, res) => {
-  fetchReviews().then((reviews) => {
-    res.status(200).send({ reviews });
-  });
+exports.getReviews = (req, res, next) => {
+  const { category, sort_by, order } = req.params;
+  fetchReviews(category, sort_by, order)
+    .then((reviews) => {
+      res.status(200).send({ reviews });
+    })
+    .catch(next);
 };
 
 exports.getReviewComments = (req, res, next) => {
