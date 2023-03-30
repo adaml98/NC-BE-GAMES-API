@@ -7,6 +7,7 @@ const {
   submitReviewComment,
   removeComment,
   fetchUsers,
+  fetchEndpoints,
 } = require("../models/categories.models");
 
 exports.getCategories = (req, res) => {
@@ -74,5 +75,12 @@ exports.deleteComment = (req, res, next) => {
 exports.getUsers = (req, res, next) => {
   fetchUsers().then((users) => {
     res.status(200).send({ users });
+  });
+};
+
+exports.getEndpoints = (req, res) => {
+  fetchEndpoints().then((endpoints) => {
+    const parsedEndpoint = JSON.parse(endpoints);
+    res.status(200).send({ endpoints: parsedEndpoint });
   });
 };

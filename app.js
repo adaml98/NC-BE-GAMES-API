@@ -8,6 +8,7 @@ const {
   postReviewComment,
   deleteComment,
   getUsers,
+  getEndpoints,
 } = require("./controllers/categories.controllers");
 
 const {
@@ -27,6 +28,8 @@ app.get("/api/reviews/:review_id", getReview);
 app.get("/api/reviews/:review_id/comments", getReviewComments);
 
 app.get("/api/users", getUsers);
+
+app.get("/api", getEndpoints);
 
 app.patch("/api/reviews/:review_id", patchReview);
 app.post("/api/reviews/:review_id/comments", postReviewComment);

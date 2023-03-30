@@ -431,6 +431,32 @@ describe("GET: /api/users", () => {
   });
 });
 
+describe("GET: /api", () => {
+  it("should recieve a 200 and return an object of endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .expect("Content-Type", /json/)
+      .then(({ body }) => {
+        expect(body.endpoints).toHaveProperty("GET /api");
+        expect(body.endpoints).toHaveProperty("GET /api/categories");
+        expect(body.endpoints).toHaveProperty("GET /api/reviews");
+        expect(body.endpoints).toHaveProperty("GET /api/reviews/:review_id");
+        expect(body.endpoints).toHaveProperty(
+          "GET /api/reviews/:review_id/comments"
+        );
+        expect(body.endpoints).toHaveProperty("GET /api/users");
+        expect(body.endpoints).toHaveProperty("PATCH /api/reviews/:review_id");
+        expect(body.endpoints).toHaveProperty(
+          "POST /api/reviews/:review_id/comments"
+        );
+        expect(body.endpoints).toHaveProperty(
+          "DELETE /api/comments/:comment_id"
+        );
+      });
+  });
+});
+
 describe("Wrong path error handling", () => {
   it("should throw a 404 error when given a route that does not exist", () => {
     return request(app)
