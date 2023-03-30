@@ -23,7 +23,7 @@ app.use(express.json());
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReview);
 
-app.get("/api/reviews/:category?/:sort_by?/:order?", getReviews);
+app.get("/api/reviews", getReviews);
 
 app.get("/api/reviews/:review_id/comments", getReviewComments);
 app.get("/api/users", getUsers);
