@@ -387,7 +387,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
   });
 });
 
-describe("DELETE: /api/comments/:comment_idgroup", () => {
+describe("DELETE: /api/comments/:comment_id", () => {
   it("should delete the given comment and return no content", () => {
     return request(app)
       .delete("/api/comments/1")
