@@ -26,7 +26,7 @@ describe("GET: /api/categories", () => {
       });
   });
 });
-describe("GET: /api/reviews/:review_id", () => {
+describe.only("GET: /api/reviews/:review_id", () => {
   it("should get a response of 200 and return a specific review depending on the parametric endpoint", () => {
     return request(app)
       .get("/api/reviews/1")
@@ -47,6 +47,7 @@ describe("GET: /api/reviews/:review_id", () => {
           "2021-01-18T10:00:20.514Z"
         );
         expect(body.review).toHaveProperty("votes", 1);
+        expect(body.review).toHaveProperty("comment_count", "0");
       });
   });
 
