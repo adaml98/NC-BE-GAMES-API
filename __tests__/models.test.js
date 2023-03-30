@@ -163,7 +163,7 @@ describe("GET: /api/reviews", () => {
         body.reviews.forEach((review) => {
           expect(review).toHaveProperty("review_id", expect.any(Number));
           expect(review).toHaveProperty("title", expect.any(String));
-          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review).toHaveProperty("category", "social deduction");
           expect(review).toHaveProperty("designer", expect.any(String));
           expect(review).toHaveProperty("owner", expect.any(String));
           expect(review).toHaveProperty("review_body", expect.any(String));
