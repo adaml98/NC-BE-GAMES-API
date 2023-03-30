@@ -26,7 +26,7 @@ describe("GET: /api/categories", () => {
       });
   });
 });
-describe.only("GET: /api/reviews/:review_id", () => {
+describe("GET: /api/reviews/:review_id", () => {
   it("should get a response of 200 and return a specific review depending on the parametric endpoint", () => {
     return request(app)
       .get("/api/reviews/1")
