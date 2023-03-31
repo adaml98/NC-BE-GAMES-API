@@ -1,7 +1,7 @@
 # Northcoders House of Games API
 
 HOSTED VERSION:
-https://nc-be-games.onrender.com
+https://nc-be-games.onrender.com/api
 
 PROJECT DESCRIPTION:
 A backend API for a database of board games.
