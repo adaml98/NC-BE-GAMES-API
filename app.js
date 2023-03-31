@@ -20,7 +20,6 @@ app.use("/api/categories", categoriesRouter);
 app.use("/api/reviews", reviewsRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/users", usersRouter);
-
 app.use("/*", (req, res) => {
   res.status(404).send({ msg: "Path not found" });
 });
