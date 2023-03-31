@@ -455,7 +455,7 @@ describe("GET: /api", () => {
       });
   });
 });
-describe.only("GET: /api/users/:user_id", () => {
+describe("GET: /api/users/:user_id", () => {
   it("should recieve a 200 and return a single user depending on the user_id", () => {
     return request(app)
       .get("/api/users/mallionaire")
