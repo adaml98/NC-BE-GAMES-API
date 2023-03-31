@@ -387,7 +387,7 @@ describe("PATCH: /api/reviews/:review_id", () => {
   });
 });
 
-describe("DELETE: /api/comments/:comment_idgroup", () => {
+describe("DELETE: /api/comments/:comment_id", () => {
   it("should delete the given comment and return no content", () => {
     return request(app)
       .delete("/api/comments/1")
@@ -427,6 +427,32 @@ describe("GET: /api/users", () => {
           expect(user).toHaveProperty("name", expect.any(String));
           expect(user).toHaveProperty("avatar_url", expect.any(String));
         });
+      });
+  });
+});
+
+describe("GET: /api", () => {
+  it("should recieve a 200 and return an object of endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .expect("Content-Type", /json/)
+      .then(({ body }) => {
+        expect(body.endpoints).toHaveProperty("GET /api");
+        expect(body.endpoints).toHaveProperty("GET /api/categories");
+        expect(body.endpoints).toHaveProperty("GET /api/reviews");
+        expect(body.endpoints).toHaveProperty("GET /api/reviews/:review_id");
+        expect(body.endpoints).toHaveProperty(
+          "GET /api/reviews/:review_id/comments"
+        );
+        expect(body.endpoints).toHaveProperty("GET /api/users");
+        expect(body.endpoints).toHaveProperty("PATCH /api/reviews/:review_id");
+        expect(body.endpoints).toHaveProperty(
+          "POST /api/reviews/:review_id/comments"
+        );
+        expect(body.endpoints).toHaveProperty(
+          "DELETE /api/comments/:comment_id"
+        );
       });
   });
 });
