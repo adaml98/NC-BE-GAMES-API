@@ -8,6 +8,7 @@ const {
   removeComment,
   fetchUsers,
   fetchEndpoints,
+  fetchUser,
 } = require("../models/categories.models");
 
 exports.getCategories = (req, res) => {
@@ -83,4 +84,13 @@ exports.getEndpoints = (req, res) => {
     const parsedEndpoint = JSON.parse(endpoints);
     res.status(200).send({ endpoints: parsedEndpoint });
   });
+};
+
+exports.getUser = (req, res, next) => {
+  const username = req.params.username;
+  fetchUser(username)
+    .then((user) => {
+      res.status(200).send({ user });
+    })
+    .catch(next);
 };

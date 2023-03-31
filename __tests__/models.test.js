@@ -396,7 +396,6 @@ describe("DELETE: /api/comments/:comment_id", () => {
         expect(body).toEqual({});
       });
   });
-
   it("should throw a 404 error when given an incorrect id", () => {
     return request(app)
       .delete("/api/comments/999999")
@@ -453,6 +452,29 @@ describe("GET: /api", () => {
         expect(body.endpoints).toHaveProperty(
           "DELETE /api/comments/:comment_id"
         );
+      });
+  });
+});
+describe.only("GET: /api/users/:user_id", () => {
+  it("should recieve a 200 and return a single user depending on the user_id", () => {
+    return request(app)
+      .get("/api/users/mallionaire")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.user).toHaveProperty("username", "mallionaire");
+        expect(body.user).toHaveProperty("name", "haz");
+        expect(body.user).toHaveProperty(
+          "avatar_url",
+          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        );
+      });
+  });
+  it("should throw a 404 error when given an incorrect user", () => {
+    return request(app)
+      .get("/api/users/adam")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404 Not Found");
       });
   });
 });
