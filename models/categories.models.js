@@ -43,10 +43,13 @@ exports.fetchReviews = (category, sort_by = "created_at", order = "desc") => {
   if (
     ![
       undefined,
-      "euro game",
-      "social deduction",
+      "strategy",
+      "hidden-roles",
       "dexterity",
-      "children's games",
+      "push-your-luck",
+      "roll-and-write",
+      "deck-building",
+      "engine-building",
     ].includes(category)
   ) {
     return Promise.reject({ status: 404, msg: "404 Not Found" });
