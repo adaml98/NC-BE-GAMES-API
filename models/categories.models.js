@@ -43,9 +43,12 @@ exports.fetchReviews = (category, sort_by = "created_at", order = "desc") => {
   if (
     ![
       undefined,
+      "euro game",
+      "social deduction",
+      "dexterity",
+      "children's games",
       "strategy",
       "hidden-roles",
-      "dexterity",
       "push-your-luck",
       "roll-and-write",
       "deck-building",
